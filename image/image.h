@@ -3,7 +3,7 @@
 
 class image {
     public:
-        image(const double ar, const int iw);
+        // image(const double ar, const int iw);
         image(const int iw, const int ih);
         double const aspect_ratio;
         int const image_width;
