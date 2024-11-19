@@ -16,7 +16,7 @@ using point = vec3;
 
 int main() 
 {
-    input in = input("./multiple_reflect_balls.json");
+    input in = input("./json-input/scene.json");
     settings s = in.create_settings();
     s.start();
     std::cout << "FINISHED RENDER!" << std::endl;

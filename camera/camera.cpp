@@ -158,7 +158,8 @@ void camera::render(image img, ray_intersectable_list env, light_list lights) {
 rgb camera::ray_colour(const ray& r, const ray_intersectable& world, const light_list lights) {
     intersect_history history;
     if(world.intersect(r, 0, inf, history)) {
-        rgb colour = lights.calculate_lighting(history, world, r, 8);
+        // Add number of bounces here!!!!!!!
+        rgb colour = lights.calculate_lighting(history, world, r, 3);
         return colour;
     }
     return rgb(0.25, 0.25, 0.25);
