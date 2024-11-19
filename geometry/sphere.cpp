@@ -38,15 +38,8 @@ bool sphere::intersect(const ray&r,
             history.time = root;
             history.point = r.position_at(root);
             vec3 outward_norm = (history.point - center) / radius;
-            // history.point += outward_norm * 1e-4;
             history.set_face_of_norm(r, outward_norm);
-            // std::cout << "diffuse colour: " << material_settings.get_diffuse_colour() << std::endl;
             history.set_material(material_settings);
-            // std::cout << "from history: " << history.mat.get_diffuse_colour() << std::endl;
-
-
-
-
             return true;
         }
 
