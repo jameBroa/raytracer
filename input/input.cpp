@@ -97,8 +97,9 @@ camera input::create_cam_settings(json cam_data) {
     vec3 lookAt = vec3(cam_data["lookAt"][0], cam_data["lookAt"][1], cam_data["lookAt"][2]);
     vec3 upVector = vec3(cam_data["upVector"][0], cam_data["upVector"][1], cam_data["upVector"][2]);
     double exposure = cam_data["exposure"];
-    // image img = image(16.0/9.0, 1200);
     image img = image(cam_data["width"], cam_data["height"]);
+    point position = point(cam_data["position"][0], cam_data["position"][1], cam_data["position"][2]);
+    std::cout << "camera position: " << position << std::endl;
 
-    return camera(fov, point(0,0,0), lookAt, upVector, img, exposure);
+    return camera(fov, position, lookAt, upVector, img, exposure);
 }

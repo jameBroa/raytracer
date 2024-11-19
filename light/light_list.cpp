@@ -102,7 +102,7 @@ rgb light_list::calculate_lighting(
                     if (world.intersect(refl_ray, 0, inf, refl_hist)) {
                         // Calculate the lighting for the reflected ray
                         vec3 reflected_light = calculate_lighting(refl_hist, world, refl_ray, num_bounces - 1);
-                        total_light += reflected_light;
+                        total_light += reflected_light * mat.get_reflectivity(); // Accumulate reflected color
                         return reflected_light;
                     } else {
                         // Handle case where reflection ray does not hit any object

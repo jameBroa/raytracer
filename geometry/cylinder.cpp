@@ -99,7 +99,7 @@ bool cylinder::intersect(const ray& r,
                 
                 point p = r.position_at(t_cap_2) - cap_2;
                     if (p.length_squared() <= radius*radius && t_cap_2 < closest_t - 1e-4) {
-                        std::cout << "top cap called" << std::endl;
+                        // std::cout << "top cap called" << std::endl;
                         // std::cout << p << std::endl;
                         // std::cout << "t_cap_2: " << t_cap_2 << std::endl;
                         called = true;
