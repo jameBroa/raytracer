@@ -14,7 +14,6 @@ input::input(string const fp) : file_path(fp) {};
 
 settings input::create_settings() {
     std::ifstream f(file_path);
-    std::cout << "get's here (1)" << std::endl;
     json data;
     f >> data;
     int num_bounces = data["nbounces"];
@@ -55,16 +54,13 @@ ray_intersectable_list input::create_env_settings(json scene_data) {
         double reflectivity = material_data["reflectivity"];
         bool isrefractive = material_data["isrefractive"];
         double refractiveindex = material_data["refractiveindex"];
-        // bool istextured = shape_data["hastexture"];
         material mat;
         if(shape_data.contains("hastexture")) {
             if(shape_data["hastexture"] == true) {
             std::string txt_path = shape_data["texturepath"];
-            std::cout << "texture path: " << txt_path << std::endl;
             mat = material(ks, kd, specularexponent, diffise_colour, specular_colour, isreflective, reflectivity, isrefractive, refractiveindex,
             true, std::make_shared<texture>(txt_path)
             );
-            // std::cout << "should be: " << istextured << std::endl;
             } else {
                 mat = material(ks, kd, specularexponent, diffise_colour, specular_colour, isreflective, reflectivity, isrefractive, refractiveindex,
                 false, std::make_shared<texture>("\0"));
@@ -74,20 +70,12 @@ ray_intersectable_list input::create_env_settings(json scene_data) {
             false, std::make_shared<texture>("\0"));
         }
 
-
-        // std::string txt_path = "./checkerboard.ppm";
-        // material mat = material(ks, kd, specularexponent, diffise_colour, specular_colour, isreflective, reflectivity, isrefractive, refractiveindex,
-        // std::make_shared<texture>(txt_path)
-        // );
-        std::cout << "material created" << std::endl;
         if (env_type == "sphere") {
             env.add(make_shared<sphere>(
                 point(shape_data["center"][0], shape_data["center"][1], shape_data["center"][2]),
                 shape_data["radius"],
                 mat
             ));
-            std::cout << "sphere added" << std::endl;
-
         } else if (env_type == "cylinder") {
             env.add(make_shared<cylinder>(
                 point(shape_data["center"][0], shape_data["center"][1], shape_data["center"][2]),
@@ -96,8 +84,6 @@ ray_intersectable_list input::create_env_settings(json scene_data) {
                 shape_data["height"],
                 mat
             ));
-            std::cout << "cylinder added" << std::endl;
-
         } else if (env_type == "triangle") {
             env.add(make_shared<triangle>(
                 point(shape_data["v0"][0], shape_data["v0"][1], shape_data["v0"][2]),
@@ -105,8 +91,6 @@ ray_intersectable_list input::create_env_settings(json scene_data) {
                 point(shape_data["v2"][0], shape_data["v2"][1], shape_data["v2"][2]),
                 mat
             ));
-            std::cout << "triangle added" << std::endl;
-
         }
     }
     return env;
@@ -121,7 +105,6 @@ camera input::create_cam_settings(json cam_data) {
     double exposure = cam_data["exposure"];
     image img = image(cam_data["width"], cam_data["height"]);
     point position = point(cam_data["position"][0], cam_data["position"][1], cam_data["position"][2]);
-    std::cout << "camera position: " << position << std::endl;
 
     return camera(fov, position, lookAt, upVector, img, exposure);
 }

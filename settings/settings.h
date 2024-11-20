@@ -3,6 +3,7 @@
 
 #include "../common.h"
 #include "../scene/scene.h"
+#include <string>
 
 
 class settings{
@@ -14,7 +15,7 @@ class settings{
          scene world_objects;
          image img;
 
-        void start();
+        void start(std::string filename);
 
 };
 

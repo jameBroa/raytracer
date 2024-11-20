@@ -63,7 +63,6 @@ rgb light_list::calculate_lighting(
         mat.get_specular_colour();
         
         if(mat.get_texture()->dirname != "\0") {
-            std::cout << "adding texture colours" << std::endl;
             vec3 txt_color = mat.get_texture()->sample(history.u, history.v);
             I_D = I_D * txt_color;
             I_S = I_S * txt_color;
