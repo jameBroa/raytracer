@@ -25,6 +25,7 @@ class ray_intersectable_list : public ray_intersectable {
         void add(shared_ptr<ray_intersectable>);
         const material& get_material() const override;
         const virtual std::string& get_name() const override;
+        void get_uv(const point& p, double& u, double& v) const override;
 
 
         bool intersect(const ray& r, 

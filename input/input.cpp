@@ -5,6 +5,7 @@
 #include "../geometry/cylinder.h"
 #include "../geometry/triangle.h"
 #include "../vec/vec3_utils.h"
+#include <string>
 
 using namespace vec3_utils;
 using json = nlohmann::json;
@@ -24,7 +25,6 @@ settings input::create_settings() {
     ray_intersectable_list env = create_env_settings(data["scene"]["shapes"]);
     light_list lights = create_light_settings(data["scene"]["lightsources"]);
     scene input_scene = scene(env, lights);
-
     return settings(render_mode, cam_settings, img, num_bounces, input_scene);
 }
 
@@ -55,8 +55,30 @@ ray_intersectable_list input::create_env_settings(json scene_data) {
         double reflectivity = material_data["reflectivity"];
         bool isrefractive = material_data["isrefractive"];
         double refractiveindex = material_data["refractiveindex"];
+        // bool istextured = shape_data["hastexture"];
+        material mat;
+        if(shape_data.contains("hastexture")) {
+            if(shape_data["hastexture"] == true) {
+            std::string txt_path = shape_data["texturepath"];
+            std::cout << "texture path: " << txt_path << std::endl;
+            mat = material(ks, kd, specularexponent, diffise_colour, specular_colour, isreflective, reflectivity, isrefractive, refractiveindex,
+            true, std::make_shared<texture>(txt_path)
+            );
+            // std::cout << "should be: " << istextured << std::endl;
+            } else {
+                mat = material(ks, kd, specularexponent, diffise_colour, specular_colour, isreflective, reflectivity, isrefractive, refractiveindex,
+                false, std::make_shared<texture>("\0"));
+            }
+        } else {
+            mat = material(ks, kd, specularexponent, diffise_colour, specular_colour, isreflective, reflectivity, isrefractive, refractiveindex,
+            false, std::make_shared<texture>("\0"));
+        }
 
-        material mat = material(ks, kd, specularexponent, diffise_colour, specular_colour, isreflective, reflectivity, isrefractive, refractiveindex);
+
+        // std::string txt_path = "./checkerboard.ppm";
+        // material mat = material(ks, kd, specularexponent, diffise_colour, specular_colour, isreflective, reflectivity, isrefractive, refractiveindex,
+        // std::make_shared<texture>(txt_path)
+        // );
         std::cout << "material created" << std::endl;
         if (env_type == "sphere") {
             env.add(make_shared<sphere>(

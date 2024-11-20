@@ -6,6 +6,34 @@ using namespace vec3_utils;
 using namespace std;
 
 
+void cylinder::get_uv(const point& p, double& u, double& v) const {
+
+    float theta = atan2(p.z(), p.x());
+    u = (theta + M_PI) / (2*M_PI);
+    v = p.y();
+
+
+    // vec3 cp = p - center;
+    // double phi = atan2(cp.z(), cp.x());
+    // u = 1 - (phi + pi) / (2*pi);
+    // v = (cp.y() - center.y()) / height;
+    // if (u < 0) u = 0;
+    // if (u > 1) u = 1;
+    // if (v < 0) v = 0;
+    // if (v > 1) v = 1;
+    // return;
+    // vec3 cp = p - center;
+    // double phi = atan2(cp.z(), cp.x());
+    // u = 1 - (phi + pi) / (2*pi);
+    // v = (cp.y() - center.y()) / height;
+    // if (u < 0) u = 0;
+    // if (u > 1) u = 1;
+    // if (v < 0) v = 0;
+    // if (v > 1) v = 1;
+    // return;
+}
+
+
 cylinder::cylinder(const point ctr,
                     const vec3 ax,
                     const double r,
@@ -110,6 +138,10 @@ bool cylinder::intersect(const ray& r,
                         // history.point += axis * 1e-4;
                         did_hit = true;
                         closest_t = t_cap_2;
+                        double u,v;
+                        get_uv(history.point, u, v);
+                        history.u = u;
+                        history.v = v;
                         return true;
                         // history.time = t_cap_2;
                         // history.point = r.position_at(t_cap_2);
@@ -155,7 +187,10 @@ bool cylinder::intersect(const ray& r,
                 history.point += outward_norm * 1e-4;
                 history.set_face_of_norm(r, outward_norm);
                 history.set_material(material_settings);
-
+                double u,v;
+                get_uv(history.point, u, v);
+                history.u = u;
+                history.v = v;
                 closest_t = root;
                 did_hit = true;
                 
@@ -173,6 +208,10 @@ bool cylinder::intersect(const ray& r,
                         history.set_material(material_settings);
                         did_hit = true;
                         closest_t = t_cap_1;
+                        double u,v;
+                        get_uv(history.point, u, v);
+                        history.u = u;
+                        history.v = v;
 
                         return true; //when uncommented, mirror.json or whatever doesn't work :(
                     }

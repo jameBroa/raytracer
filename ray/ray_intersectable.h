@@ -11,6 +11,7 @@ class ray_intersectable {
         virtual ~ray_intersectable() = default;
         const virtual material& get_material() const = 0;
         const virtual std::string& get_name() const = 0;
+        virtual void get_uv(const point& p, double& u, double& v) const = 0;
         virtual bool intersect(const ray& r, 
         double ray_inters_min, // min time the ray intersects
         double ray_inters_max, // max time the ray intersects

@@ -1,5 +1,6 @@
 #include "ray_intersect_history.h"
 #include "../vec/vec3_utils.h"
+#include <chrono>
 
 using namespace vec3_utils;
 
@@ -20,5 +21,4 @@ void intersect_history::set_material(const material& curr_mat) {
     // std::cout << curr_mat.get_diffuse_colour() << std::endl;
     mat = curr_mat;
     // std::cout << mat.get_diffuse_colour() << std::endl;
-
 }

@@ -8,6 +8,7 @@
 #include "./light/light.h"
 #include "./light/light_list.h"
 #include "./input/input.h"
+#include "./texture/texture.h"
 #include <iostream>
 
 using namespace std;
@@ -16,7 +17,9 @@ using point = vec3;
 
 int main() 
 {
-    input in = input("./json-input/scene.json");
+    // texture txt = texture("./checkerboard.ppm");
+    // std::cout << "Texture loaded!" << std::endl;
+    input in = input("./input-json/texture_all.json");
     settings s = in.create_settings();
     s.start();
     std::cout << "FINISHED RENDER!" << std::endl;

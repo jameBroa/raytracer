@@ -17,7 +17,21 @@ const std::string& triangle::get_name() const{
     return "triangle";
 }
 
+void triangle::get_uv(const point& p, double& u, double& v) const {
+    vec3 ab = b - a;
+    vec3 ac = c - a;
+    vec3 ap = p - a;
 
+    double dot00 = dot(ab, ab);
+    double dot01 = dot(ab, ac);
+    double dot02 = dot(ab, ap);
+    double dot11 = dot(ac, ac);
+    double dot12 = dot(ac, ap);
+
+    double invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+    u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+    v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+}
 
 bool triangle::intersect(const ray&r, 
         double ray_inters_min, 
@@ -65,6 +79,10 @@ bool triangle::intersect(const ray&r,
             if ((u >= -EPSILON) && (v >= -EPSILON) && (u + v <= 1+EPSILON)) {
                 history.time = t;
                 history.point = p;
+                double u,v;
+                get_uv(history.point, u, v);
+                history.u = u;
+                history.v = v;
                 history.set_face_of_norm(r, norm);
                 history.set_material(material_settings);
                 return true;

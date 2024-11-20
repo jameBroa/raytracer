@@ -21,18 +21,11 @@ const material& ray_intersectable_list::get_material() const {
 
     if(last_intersected_obj) {
                 
-        // std::cout << "getting vals" << std::endl;
-        // std::cout << last_intersected_obj->get_material().get_diffuse_colour() << std::endl;
-
         return last_intersected_obj->get_material();
     } else {
-        // If no object has been intersected, return a default material
         material default_material = material();
         return default_material;
     }
-
-    // const material& mat = material();
-    // return mat;
 }
 
 const std::string& ray_intersectable_list::get_name() const {
@@ -40,14 +33,15 @@ const std::string& ray_intersectable_list::get_name() const {
     if(last_intersected_obj) {
         return last_intersected_obj->get_name();
     } else {
-        // If no object has been intersected, return no name
         return "no object intersected";
     }
-
-    // const material& mat = material();
-    // return mat;
 }
 
+void ray_intersectable_list::get_uv(const point& p, double& u, double& v) const {
+     if(last_intersected_obj) {
+        last_intersected_obj->get_uv(p, u, v);
+    } 
+};
 
 bool ray_intersectable_list::intersect(
     const ray& r, double ray_inters_min, double ray_inters_max, intersect_history& history 
@@ -59,17 +53,9 @@ bool ray_intersectable_list::intersect(
 
     for(const shared_ptr<ray_intersectable>& intersectable_obj : all_intersectable_objs) {
         if(intersectable_obj->intersect(r, ray_inters_min, closest, temp_history) == true) {
-            // std::cout << "in ray_intersectable_list::intersect()" << std::endl;
-            
-            // if(temp_history.time < closest) {
-                closest = temp_history.time;
-                did_hit = true;
-                history = temp_history;
-                // last_intersected_obj = intersectable_obj;
-                // std::cout << "history diff color: " << history.mat.get_diffuse_colour() << std::endl;
-
-            
-            // return true; // When uncommented, works for reflection scene
+            closest = temp_history.time;
+            did_hit = true;
+            history = temp_history;
         }
 
     }

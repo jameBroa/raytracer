@@ -6,11 +6,13 @@
 
 class intersect_history {
     public:
+        intersect_history() = default;
         point point;
         vec3 normal;
         double time;
         bool face_of_norm; // Will have UNIT LENGTH
         material mat;
+        float u,v;
 
         void set_face_of_norm(const ray& r, const vec3& outward_norm);
         void set_material(const material& mat);

@@ -17,7 +17,7 @@ class sphere : public ray_intersectable {
 
         const material& get_material() const override;
         const std::string& get_name() const override;
-   
+        void get_uv(const point& p, double& u, double& v) const override;
     private:
         point center;
         double radius; 
