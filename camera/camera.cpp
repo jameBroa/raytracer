@@ -122,9 +122,9 @@ vec3 camera::calculate_pixel_0() const {
 }
 
 void camera::render(image img, ray_intersectable_list env, light_list lights) {
-    ofstream image("example.ppm");
+    ofstream image("output.ppm");
     image << "P3\n" << img.image_width << " " << img.image_height << "\n255\n";
-    int samples_per_pixel = 8; // Higher sample count for random sampling
+    int samples_per_pixel = 2; // Higher sample count for random sampling
     double inv_samples = 1.0 / (samples_per_pixel/1.5);
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -132,6 +132,7 @@ void camera::render(image img, ray_intersectable_list env, light_list lights) {
 
     for(int i = 0; i < img.image_height; i++) {
         for(int j = 0; j < img.image_width; j++) {
+
             rgb pixel_color(0, 0, 0);
 
             // Random sampling within each pixel
@@ -143,7 +144,6 @@ void camera::render(image img, ray_intersectable_list env, light_list lights) {
                 vec3 ray_direction = pixel_center - camera_center;
 
                 ray r = ray(camera_center, ray_direction);
-
                 pixel_color += ray_colour(r, env, lights);
             }
 

@@ -61,6 +61,13 @@ rgb light_list::calculate_lighting(
         (light->intensity * (1 / ((1*1)))) *
         std::pow(std::max(0.0, dot(H, history.normal)), mat.get_alpha()) * 
         mat.get_specular_colour();
+        
+        if(mat.get_texture()->dirname != "\0") {
+            std::cout << "adding texture colours" << std::endl;
+            vec3 txt_color = mat.get_texture()->sample(history.u, history.v);
+            I_D = I_D * txt_color;
+            I_S = I_S * txt_color;
+        }
 
         if(in_shadow == true) {
             if (mat.get_isreflective() && mat.get_reflectivity() > 0) {
