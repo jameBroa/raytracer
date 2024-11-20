@@ -4,6 +4,7 @@
 #include "../common.h"
 #include "../light/light.h"
 #include <random>
+#include <string>
 
 using point = vec3;
 using namespace vec3_utils;
@@ -66,32 +67,17 @@ double camera::calculate_vp_height(image img, vec3 cc, vec3 look, double fov) co
     double test_rad = 2 * atan(tan(fov_rad/2)/ (double(img.image_width)/double(img.image_height)));
 
     double vph = 2 * cam_dir.length() * tan(fov_rad/2);
-    cout << "vph: " << vph << endl;
     return vph;
-
-    // If horizontal FOV
-    // return vpw / (double(img.image_width) / double(img.image_height));
-
-    // double fov_rad = fov * 3.1415926 / 180.0;
-    // return 2 * tan(fov_rad / 2);
 }
 
 double camera::calculate_focal_length(double fov, image img) const {
-    // double fov_rad = fov * 3.1415926 / 180.0;
-    // double vph = calculate_vp_height(fov);
-    // double vpw = calculate_vp_width(img);
-    // double x = std::sqrt(vph * vph + vpw * vpw);
-    // return vpw / (2 * tan(fov_rad / 2));
     return 1;
 }
-
-
 
 // u horizontal pixels
 vec3 camera::calculate_vp_u() const {
     vec3 a = unit_vector(lookAt - camera_center);
     vec3 b = unit_vector(cross(upVector, a));
-
     return b * viewport_width*1.5;
 }
 // v vertical pixels
@@ -113,7 +99,6 @@ vec3 camera::calculate_pg_v(image img) const {
 vec3 camera::calculate_ul_pixel() const {
     vec3 cam_dir = lookAt - camera_center;
     vec3 vp_center = camera_center + cam_dir * 1;
-
     return vp_center - viewport_v/2 - viewport_u/2;
 }
 
@@ -121,8 +106,8 @@ vec3 camera::calculate_pixel_0() const {
     return vp_ul_pixel + 0.5 * (pixel_gap_u + pixel_gap_v);
 }
 
-void camera::render(image img, ray_intersectable_list env, light_list lights) {
-    ofstream image("output.ppm");
+void camera::render(image img, ray_intersectable_list env, light_list lights, std::string filename) {
+    ofstream image(filename += ".ppm");
     image << "P3\n" << img.image_width << " " << img.image_height << "\n255\n";
     int samples_per_pixel = 2; // Higher sample count for random sampling
     double inv_samples = 1.0 / (samples_per_pixel/1.5);

@@ -6,7 +6,6 @@ texture::texture(const std::string filename) {
     if(filename == "\0") {
         dirname = "\0";
         // No texture passed
-        // std::cerr << "No texture passed" << std::endl;
         return;
     }
 
@@ -23,24 +22,6 @@ vec3 texture::sample(float u, float v) {
     int y = static_cast<int>(v * height);
     
     return data[y * width + x];
-
-    // u = std::fmod(u, 1.0f);
-    // v = std::fmod(v, 1.0f);
-    // if (u < 0) u += 1.0f;
-    // if (v < 0) v += 1.0f;
-
-    // int x = static_cast<int>(u * width) % width;
-    // int y = static_cast<int>(v * height) % height;
-    // int index = y * width + x;
-
-    // return data[index];
-    // int x = static_cast<int>(u * width) % width;
-    // int y = static_cast<int>(v * height) % height;
-    // int index = y * width + x;
-    // // std::cout << "U: " << u << " V: " << v << std::endl;
-    // // std::cout << "Sampling at: x = " << x << ", y = " << y << ", index = " << index << std::endl;
-    // // std::cout << "Data size: " << data.size() << std::endl;
-    // return data[index];
 }
 
 void texture::load_ppm(const std::string filename) {
@@ -62,7 +43,7 @@ void texture::load_ppm(const std::string filename) {
     file.ignore(255, '\n');
 
     data.resize(width * height);
-    std::cout << "loading ppm" << std::endl;
+    
     if(header == "P3") {
         for(int i = 0; i < width * height; i++) {
             int r, g, b;
@@ -78,9 +59,6 @@ void texture::load_ppm(const std::string filename) {
             data[i] = vec3(r / 255.0, g / 255.0, b / 255.0);
         }
     }
-    std::cout << "finished loading ppm texture" << std::endl;
-
-
     if(!file) {
         std::cerr << "Error reading file " << filename << std::endl;
     }

@@ -2,6 +2,7 @@
 #include "../image/image.h"
 #include "../ray/ray_intersectable_list.h"
 #include "../light/light_list.h"
+#include <string>
 
 
 
@@ -55,7 +56,7 @@ class camera{
         vec3 calculate_ul_pixel() const;
         vec3 calculate_pixel_0() const;
         rgb ray_colour(const ray& r, const ray_intersectable& world, const light_list lights);
-        void render(image img, ray_intersectable_list env, light_list lights);
+        void render(image img, ray_intersectable_list env, light_list lights, std::string filename);
         rgb apply_exposure(const rgb& color);
 };
 
