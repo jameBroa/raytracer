@@ -5,13 +5,15 @@
 #include "ray_intersect_history.h"
 #include "../material/material.h"
 #include <string>
+#include "aabb/aabb.h"
 
 class ray_intersectable {
     public:
         virtual ~ray_intersectable() = default;
-        const virtual material& get_material() const = 0;
+        const virtual material& get_material() const = 0; // Material of the object
         const virtual std::string& get_name() const = 0;
-        virtual void get_uv(const point& p, double& u, double& v) const = 0;
+        virtual void get_uv(const point& p, double& u, double& v) const = 0; // UV coordinates
+        virtual bool bounding_box(aabb& bbox) const = 0; // Axis aligned bounding box
         virtual bool intersect(const ray& r, 
         double ray_inters_min, // min time the ray intersects
         double ray_inters_max, // max time the ray intersects
