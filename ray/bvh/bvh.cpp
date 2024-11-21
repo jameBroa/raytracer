@@ -1,5 +1,8 @@
 #include "bvh.h"
 #include <algorithm>
+#include "../../vec/vec3_utils.h"
+
+using namespace vec3_utils;
 bvh_node::bvh_node(const std::vector<std::shared_ptr<ray_intersectable>>& objects, size_t start, size_t end) {
     auto objects_copy = objects;
 
@@ -46,6 +49,8 @@ bvh_node::bvh_node(const std::vector<std::shared_ptr<ray_intersectable>>& object
     }
 
     bbx = box_l.surrounding_bbox(box_l, box_r);
+    std::cout << "bvh.cpp: min(" << bbx.min << "), max(" << bbx.max << ")" << std::endl;
+
 }
 
 
@@ -85,7 +90,7 @@ bool bvh_node::intersect(const ray& r, double t_min, double t_max, intersect_his
     if(!bbx.intersect(r, t_min, t_max)) {
         return false;
     }
-
+    
     bool hit_left = left->intersect(r, t_min, t_max, history);
     bool hit_right = right->intersect(r, t_min, hit_left ? history.time : t_max, history);
 
