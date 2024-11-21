@@ -30,11 +30,18 @@ camera::camera(double fov, point cc, vec3 look, vec3 up, image img, double expos
 
 rgb camera::apply_exposure(const rgb& color) {
     double expos_fac = std::pow(2.0, exposure);
-    return rgb(
+    rgb exposed_col = rgb(
         std::min(1.0, color.x() * expos_fac),
         std::min(1.0, color.y() * expos_fac),
         std::min(1.0, color.z() * expos_fac)
     );
+    return exposed_col;
+}
+
+rgb camera::apply_tone_mapping(rgb color) {
+    double luminance = 0.2126 * color.x() + 0.7152 * color.y() + 0.0722 * color.z();
+    double m = luminance / (1.0 + luminance);
+    return color * (m / luminance);
 }
 
 
@@ -106,18 +113,71 @@ vec3 camera::calculate_pixel_0() const {
     return vp_ul_pixel + 0.5 * (pixel_gap_u + pixel_gap_v);
 }
 
+// void camera::render(image img, ray_intersectable_list env, light_list lights, std::string filename) {
+//     ofstream image(filename += ".ppm");
+//     image << "P3\n" << img.image_width << " " << img.image_height << "\n255\n";
+//     int samples_per_pixel = 2; // Higher sample count for random sampling
+//     double inv_samples = 1.0 / (samples_per_pixel/1.5);
+//     std::random_device rd;
+//     std::mt19937 gen(rd());
+//     std::uniform_real_distribution<> dis(0, 1);
+
+//     for(int i = 0; i < img.image_height; i++) {
+//         for(int j = 0; j < img.image_width; j++) {
+
+//             rgb pixel_color(0, 0, 0);
+
+//             // Random sampling within each pixel
+//             for (int s = 0; s < samples_per_pixel; s++) {
+//                 double u = (j + dis(gen)) / (img.image_width - 1);
+//                 double v = (i + dis(gen)) / (img.image_height - 1);
+
+//                 vec3 pixel_center = pixel_0 + (u * (viewport_u)) + (v * (viewport_v));
+//                 vec3 ray_direction = pixel_center - camera_center;
+
+//                 ray r = ray(camera_center, ray_direction);
+//                 pixel_color += ray_colour(r, env, lights);
+//             }
+
+//             pixel_color *= inv_samples;
+//             pixel_color = apply_exposure(pixel_color);
+
+//             colour_utils::output_colour(image, pixel_color);
+//         }
+//     }
+// }
+
+
+double camera::calculate_dynamic_range(const std::vector<rgb> pixel_buffer, double& min, double& max) {
+    double min_lum = std::numeric_limits<double>::max();
+    double max_lum = std::numeric_limits<double>::min();
+
+    for(const auto pixel: pixel_buffer) {
+        double curr_lum = 0.2126 * pixel.x() + 0.7152 * pixel.y() + 0.0722 * pixel.z();
+        if(curr_lum < min_lum) {
+            min_lum = curr_lum;
+        } else if (curr_lum > max_lum) {
+            max_lum = curr_lum;
+        }
+    }
+    min = min_lum;
+    max = max_lum;
+    return max_lum / min_lum;
+}
+
+
+
 void camera::render(image img, ray_intersectable_list env, light_list lights, std::string filename) {
-    ofstream image(filename += ".ppm");
-    image << "P3\n" << img.image_width << " " << img.image_height << "\n255\n";
+    std::vector<rgb> pixel_buffer(img.image_width * img.image_height);
+
     int samples_per_pixel = 2; // Higher sample count for random sampling
-    double inv_samples = 1.0 / (samples_per_pixel/1.5);
+    double inv_samples = 1.0 / (samples_per_pixel / 1.5);
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0, 1);
 
-    for(int i = 0; i < img.image_height; i++) {
-        for(int j = 0; j < img.image_width; j++) {
-
+    for (int i = 0; i < img.image_height; i++) {
+        for (int j = 0; j < img.image_width; j++) {
             rgb pixel_color(0, 0, 0);
 
             // Random sampling within each pixel
@@ -133,10 +193,32 @@ void camera::render(image img, ray_intersectable_list env, light_list lights, st
             }
 
             pixel_color *= inv_samples;
-            pixel_color = apply_exposure(pixel_color);
-
-            colour_utils::output_colour(image, pixel_color);
+            pixel_buffer[i * img.image_width + j] = pixel_color;
         }
+    }
+
+    // Step 2: Analyze the Dynamic Range
+    double min_lum, max_lum;
+    double dynamic_range = calculate_dynamic_range(pixel_buffer, min_lum, max_lum);
+    std::cout << "dynamic range: " << dynamic_range << std::endl;
+
+    // Step 3: Apply Adjustments
+    double dynamic_range_threshold = 20.0; // Example threshold
+    for (auto& pixel : pixel_buffer) {
+        pixel = apply_exposure(pixel);
+        if (dynamic_range > dynamic_range_threshold) {
+            pixel = apply_exposure(pixel);
+            pixel = apply_tone_mapping(pixel);
+        } else {
+            pixel = apply_exposure(pixel);
+        }
+    }
+
+    // Output the adjusted image
+    ofstream image(filename += ".ppm");
+    image << "P3\n" << img.image_width << " " << img.image_height << "\n255\n";
+    for (const auto& pixel : pixel_buffer) {
+        colour_utils::output_colour(image, pixel);
     }
 }
 
