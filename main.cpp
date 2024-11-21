@@ -34,7 +34,7 @@ int main(int argc, char* argv[]){
         filename = filename.substr(0, last_dot);
     }
 
-    std::cout << "STARTING RENDER!" << std::endl;
+    std::cout << "STARTING RENDER" << std::endl;
     input in = input(input_path);
     settings s = in.create_settings();
     s.start(filename);

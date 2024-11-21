@@ -19,16 +19,17 @@ const std::string& triangle::get_name() const{
 
 bool triangle::bounding_box(aabb& output_box) const {
     point min_point(
-        fmin(a.x(), fmin(b.x(), c.x())),
-        fmin(a.y(), fmin(b.y(), c.y())),
-        fmin(a.z(), fmin(b.z(), c.z()))
+        fmin(a.x(), fmin(b.x(), c.x())) - 1e-6,
+        fmin(a.y(), fmin(b.y(), c.y())- 1e-6),
+        fmin(a.z(), fmin(b.z(), c.z())- 1e-6)
     );
     point max_point(
-        fmax(a.x(), fmax(b.x(), c.x())),
-        fmax(a.y(), fmax(b.y(), c.y())),
-        fmax(a.z(), fmax(b.z(), c.z()))
+        fmax(a.x(), fmax(b.x(), c.x()) - 1e-6),
+        fmax(a.y(), fmax(b.y(), c.y()) - 1e-6),
+        fmax(a.z(), fmax(b.z(), c.z()) - 1e-6)
     );
     output_box = aabb(min_point, max_point);
+
     return true;
 }
 

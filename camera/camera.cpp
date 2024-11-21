@@ -214,12 +214,10 @@ void camera::render(image img, ray_intersectable_list env, light_list lights, st
     // Step 2: Analyze the Dynamic Range
     double min_lum, max_lum;
     double dynamic_range = calculate_dynamic_range(pixel_buffer, min_lum, max_lum);
-    std::cout << "dynamic range: " << dynamic_range << std::endl;
 
     // Step 3: Apply Adjustments
     double dynamic_range_threshold = 20.0; // Example threshold
     for (auto& pixel : pixel_buffer) {
-        pixel = apply_exposure(pixel);
         if (dynamic_range > dynamic_range_threshold) {
             pixel = apply_exposure(pixel);
             pixel = apply_tone_mapping(pixel);
