@@ -8,10 +8,12 @@
 #include "../ray/bvh/bvh.h"
 #include <chrono>
 #include <iostream>
+#include "camera_utils.h"
 
 using point = vec3;
 using namespace vec3_utils;
 using namespace std;
+using namespace camera_utils;
 
 // constructor
 camera::camera(double fov, point cc, vec3 look, vec3 up, image img, double expos) : 
@@ -176,7 +178,7 @@ void camera::render(image img, ray_intersectable_list env, light_list lights, st
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    // Scene.json
+    // Scene.json WITH NO LENS SAMPLING + limited pixel sampling
     // 9.16 seconds without BVH
     // 8.04, 8.0038 seconds with BVH
 
@@ -189,6 +191,8 @@ void camera::render(image img, ray_intersectable_list env, light_list lights, st
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0, 1);
+    double lens_radius = 0.1;
+    double focus_dist = 1.0;
 
     for (int i = 0; i < img.image_height; i++) {
         for (int j = 0; j < img.image_width; j++) {
@@ -201,7 +205,9 @@ void camera::render(image img, ray_intersectable_list env, light_list lights, st
 
                 vec3 pixel_center = pixel_0 + (u * (viewport_u)) + (v * (viewport_v));
                 vec3 ray_direction = pixel_center - camera_center;
-
+                // vec3 rd = lens_radius * random_in_unit_disk();
+                // vec3 focus_point = camera_center + focus_dist * ray_direction;
+                // ray r = ray(camera_center + rd, focus_point - (camera_center + rd));
                 ray r = ray(camera_center, ray_direction);
                 pixel_color += ray_colour(r, bvh, lights);
             }
@@ -229,11 +235,13 @@ void camera::render(image img, ray_intersectable_list env, light_list lights, st
     }
 
     // Output the adjusted image
+
     ofstream image(filename += ".ppm");
     image << "P3\n" << img.image_width << " " << img.image_height << "\n255\n";
     for (const auto& pixel : pixel_buffer) {
         colour_utils::output_colour(image, pixel);
     }
+
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
     std::cout << "Render time: " << duration.count() << " seconds" << std::endl;
@@ -298,11 +306,13 @@ void camera::render(image img, ray_intersectable_list env, light_list lights, st
 rgb camera::ray_colour(const ray& r, const ray_intersectable& world, const light_list lights) {
     intersect_history history;
     if(world.intersect(r, 0, inf, history)) {
+        // return rgb(1.0,0,0);
         // Add number of bounces here!!!!!!!
         rgb colour = lights.calculate_lighting(history, world, r, 3);
         return colour;
     }
-    return rgb(0.25, 0.25, 0.25);
+    // Make this be whatever background colour is!
+    return rgb(0,0,0);
 } 
 
 // Should be used for binary primitives functionality
