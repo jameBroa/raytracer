@@ -312,7 +312,7 @@ rgb camera::ray_colour(const ray& r, const ray_intersectable& world, const light
         return colour;
     }
     // Make this be whatever background colour is!
-    return rgb(0,0,0);
+    return rgb(0.25,0.25,0.25);
 } 
 
 // Should be used for binary primitives functionality
