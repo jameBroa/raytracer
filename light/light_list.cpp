@@ -123,6 +123,8 @@ rgb light_list::calculate_lighting(
         }
     }
 
+    rgb final_light;
+
     if(history.mat.get_isreflective() == true and history.mat.get_isrefractive() == true) {
         double fresnel_factor = 0.5;
         return fresnel_factor * reflected_light + (1.0 - fresnel_factor) * refracted_light;
@@ -133,4 +135,5 @@ rgb light_list::calculate_lighting(
     } else{
         return default_light + I_A;
     }
+
 }

@@ -14,6 +14,7 @@ This is my implementation of a ray tracer written from scratch in C++.
 - Refraction
 - Textures (on Cylinders, Spheres, Triangle planes)
 - Anti-aliasing
+- Tone mapping (happens if dynamic range is too high automatically)
 
 ## Compilation instructions
 To compile the program, run the `make` command in the root directory to compile the program. This will create an file called 'program'. 

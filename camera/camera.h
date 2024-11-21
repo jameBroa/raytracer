@@ -55,9 +55,15 @@ class camera{
 
         vec3 calculate_ul_pixel() const;
         vec3 calculate_pixel_0() const;
+        
+        // Calculate the color of the ray (bg color if not intersection, otherwise calculate lighting) 
         rgb ray_colour(const ray& r, const ray_intersectable& world, const light_list lights);
+        // Main render function
         void render(image img, ray_intersectable_list env, light_list lights, std::string filename);
+    
         rgb apply_exposure(const rgb& color);
+        rgb apply_tone_mapping(rgb color);
+        double calculate_dynamic_range(const std::vector<rgb> pixel_buffer, double& min, double& max);
 };
 
 
