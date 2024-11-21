@@ -17,6 +17,21 @@ const std::string& triangle::get_name() const{
     return "triangle";
 }
 
+bool triangle::bounding_box(aabb& output_box) const {
+    point min_point(
+        fmin(a.x(), fmin(b.x(), c.x())),
+        fmin(a.y(), fmin(b.y(), c.y())),
+        fmin(a.z(), fmin(b.z(), c.z()))
+    );
+    point max_point(
+        fmax(a.x(), fmax(b.x(), c.x())),
+        fmax(a.y(), fmax(b.y(), c.y())),
+        fmax(a.z(), fmax(b.z(), c.z()))
+    );
+    output_box = aabb(min_point, max_point);
+    return true;
+}
+
 void triangle::get_uv(const point& p, double& u, double& v) const {
     vec3 ab = b - a;
     vec3 ac = c - a;

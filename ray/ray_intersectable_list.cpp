@@ -17,6 +17,11 @@ void ray_intersectable_list::add(shared_ptr<ray_intersectable> intersectable_obj
     all_intersectable_objs.push_back(intersectable_obj);
 }
 
+bool ray_intersectable_list::bounding_box(aabb& bbox) const {
+    // Not implemented (no need to)
+}
+
+
 const material& ray_intersectable_list::get_material() const {
 
     if(last_intersected_obj) {

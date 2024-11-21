@@ -11,24 +11,18 @@ const material& sphere::get_material() const {
 }
 
 void sphere::get_uv(const point& p, double& u, double& v) const {
-    // u = 0.5;
-    // v= 0.5;
-
-    // vec3 norm = unit_vector(p - center);
-    
-    // // Replace trig functions with faster approximations
-    // u = 0.5 + std::atan2(norm.z(), norm.x()) / (2 * M_PI);
-    // v = 0.5 - std::asin(norm.y()) / M_PI;
-    
     vec3 norm = unit_vector(p - center);
     double phi = std::atan2(norm.z(), norm.x());
     double theta = std::asin(norm.y());
     u = 1 - (phi + M_PI) / (2*M_PI);
     v = (theta + M_PI/2) / M_PI;
-    // std::cout << "u: " << u << std::endl;
-    // std::cout << "v: " << v << std::endl;
-    
 }
+
+bool sphere::bounding_box(aabb& bbox) const {
+    bbox = aabb(center - vec3(radius, radius, radius), center + vec3(radius, radius, radius));
+    return true;
+}
+
 
 bool sphere::intersect(const ray&r, 
         double ray_inters_min, 

@@ -33,6 +33,31 @@ void cylinder::get_uv(const point& p, double& u, double& v) const {
     // return;
 }
 
+bool cylinder::bounding_box(aabb& output_box) const {
+    // Calculate the two end points of the cylinder
+    vec3 half_height_vector = (axis * (height));
+    point end1 = center - half_height_vector;
+    point end2 = center + half_height_vector;
+
+    // Calculate the bounding box by considering the radius around the axis
+    vec3 radius_vector(radius, radius, radius);
+
+    point min_point(
+        std::min({end1.x() - radius_vector.x(), end2.x() - radius_vector.x(), end1.x() + radius_vector.x(), end2.x() + radius_vector.x()}),
+        std::min({end1.y() - radius_vector.y(), end2.y() - radius_vector.y(), end1.y() + radius_vector.y(), end2.y() + radius_vector.y()}),
+        std::min({end1.z() - radius_vector.z(), end2.z() - radius_vector.z(), end1.z() + radius_vector.z(), end2.z() + radius_vector.z()})
+    );
+
+    point max_point(
+        std::max({end1.x() - radius_vector.x(), end2.x() - radius_vector.x(), end1.x() + radius_vector.x(), end2.x() + radius_vector.x()}),
+        std::max({end1.y() - radius_vector.y(), end2.y() - radius_vector.y(), end1.y() + radius_vector.y(), end2.y() + radius_vector.y()}),
+        std::max({end1.z() - radius_vector.z(), end2.z() - radius_vector.z(), end1.z() + radius_vector.z(), end2.z() + radius_vector.z()})
+    );
+
+    output_box = aabb(min_point, max_point);
+    return true;
+}
+
 
 cylinder::cylinder(const point ctr,
                     const vec3 ax,

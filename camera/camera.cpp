@@ -5,6 +5,9 @@
 #include "../light/light.h"
 #include <random>
 #include <string>
+#include "../ray/bvh/bvh.h"
+#include <chrono>
+#include <iostream>
 
 using point = vec3;
 using namespace vec3_utils;
@@ -169,6 +172,17 @@ double camera::calculate_dynamic_range(const std::vector<rgb> pixel_buffer, doub
 
 void camera::render(image img, ray_intersectable_list env, light_list lights, std::string filename) {
     std::vector<rgb> pixel_buffer(img.image_width * img.image_height);
+    bvh_node bvh(env.all_intersectable_objs, 0, env.all_intersectable_objs.size());
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Scene.json
+    // 9.16 seconds without BVH
+    // 8.04, 8.0038 seconds with BVH
+
+    // texture_spheres
+    // 2.8381 seconds without BVH
+    // 2.1081 seconds with BVH
 
     int samples_per_pixel = 2; // Higher sample count for random sampling
     double inv_samples = 1.0 / (samples_per_pixel / 1.5);
@@ -189,7 +203,7 @@ void camera::render(image img, ray_intersectable_list env, light_list lights, st
                 vec3 ray_direction = pixel_center - camera_center;
 
                 ray r = ray(camera_center, ray_direction);
-                pixel_color += ray_colour(r, env, lights);
+                pixel_color += ray_colour(r, bvh, lights);
             }
 
             pixel_color *= inv_samples;
@@ -220,7 +234,66 @@ void camera::render(image img, ray_intersectable_list env, light_list lights, st
     for (const auto& pixel : pixel_buffer) {
         colour_utils::output_colour(image, pixel);
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+    std::cout << "Render time: " << duration.count() << " seconds" << std::endl;
+
 }
+// No BVH
+// void camera::render(image img, ray_intersectable_list env, light_list lights, std::string filename) {
+//     std::vector<rgb> pixel_buffer(img.image_width * img.image_height);
+
+//     int samples_per_pixel = 2; // Higher sample count for random sampling
+//     double inv_samples = 1.0 / (samples_per_pixel / 1.5);
+//     std::random_device rd;
+//     std::mt19937 gen(rd());
+//     std::uniform_real_distribution<> dis(0, 1);
+
+//     for (int i = 0; i < img.image_height; i++) {
+//         for (int j = 0; j < img.image_width; j++) {
+//             rgb pixel_color(0, 0, 0);
+
+//             // Random sampling within each pixel
+//             for (int s = 0; s < samples_per_pixel; s++) {
+//                 double u = (j + dis(gen)) / (img.image_width - 1);
+//                 double v = (i + dis(gen)) / (img.image_height - 1);
+
+//                 vec3 pixel_center = pixel_0 + (u * (viewport_u)) + (v * (viewport_v));
+//                 vec3 ray_direction = pixel_center - camera_center;
+
+//                 ray r = ray(camera_center, ray_direction);
+//                 pixel_color += ray_colour(r, env, lights);
+//             }
+
+//             pixel_color *= inv_samples;
+//             pixel_buffer[i * img.image_width + j] = pixel_color;
+//         }
+//     }
+
+//     // Step 2: Analyze the Dynamic Range
+//     double min_lum, max_lum;
+//     double dynamic_range = calculate_dynamic_range(pixel_buffer, min_lum, max_lum);
+//     std::cout << "dynamic range: " << dynamic_range << std::endl;
+
+//     // Step 3: Apply Adjustments
+//     double dynamic_range_threshold = 20.0; // Example threshold
+//     for (auto& pixel : pixel_buffer) {
+//         pixel = apply_exposure(pixel);
+//         if (dynamic_range > dynamic_range_threshold) {
+//             pixel = apply_exposure(pixel);
+//             pixel = apply_tone_mapping(pixel);
+//         } else {
+//             pixel = apply_exposure(pixel);
+//         }
+//     }
+
+//     // Output the adjusted image
+//     ofstream image(filename += ".ppm");
+//     image << "P3\n" << img.image_width << " " << img.image_height << "\n255\n";
+//     for (const auto& pixel : pixel_buffer) {
+//         colour_utils::output_colour(image, pixel);
+//     }
+// }
 
 rgb camera::ray_colour(const ray& r, const ray_intersectable& world, const light_list lights) {
     intersect_history history;
