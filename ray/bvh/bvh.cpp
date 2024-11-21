@@ -49,7 +49,6 @@ bvh_node::bvh_node(const std::vector<std::shared_ptr<ray_intersectable>>& object
     }
 
     bbx = box_l.surrounding_bbox(box_l, box_r);
-    std::cout << "bvh.cpp: min(" << bbx.min << "), max(" << bbx.max << ")" << std::endl;
 
 }
 
