@@ -15,7 +15,7 @@ namespace light_utils{
         double n2 = refractive_index;  // Your material
         double eta = n1 / n2;  // This is the ratio we need
         
-        double cos_i = -dot(normal, incident);
+        double cos_i = -dot((normal), (incident));
         
         // If we're exiting the material (cos_i < 0), flip everything
         if (cos_i < 0) {

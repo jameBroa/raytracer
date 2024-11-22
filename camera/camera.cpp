@@ -205,11 +205,11 @@ void camera::render(image img, ray_intersectable_list env, light_list lights, st
 
                 vec3 pixel_center = pixel_0 + (u * (viewport_u)) + (v * (viewport_v));
                 vec3 ray_direction = pixel_center - camera_center;
-                vec3 rd = lens_radius * random_in_unit_disk();
-                vec3 focus_point = camera_center + focus_dist * ray_direction;
-                ray r = ray(camera_center + rd, focus_point - (camera_center + rd));
+                // vec3 rd = lens_radius * random_in_unit_disk();
+                // vec3 focus_point = camera_center + focus_dist * ray_direction;
+                // ray r = ray(camera_center + rd, focus_point - (camera_center + rd));
 
-                // ray r = ray(camera_center, ray_direction); // Default behaviour!!!!
+                ray r = ray(camera_center, ray_direction); // Default behaviour!!!!
                 pixel_color += ray_colour(r, bvh, lights);
             }
 
@@ -227,7 +227,7 @@ void camera::render(image img, ray_intersectable_list env, light_list lights, st
     for (auto& pixel : pixel_buffer) {
         if (dynamic_range > dynamic_range_threshold) {
             pixel = apply_exposure(pixel);
-            pixel = apply_tone_mapping(pixel);
+            // pixel = apply_tone_mapping(pixel);
         } else {
             pixel = apply_exposure(pixel);
         }

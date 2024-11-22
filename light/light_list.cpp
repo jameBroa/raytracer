@@ -50,17 +50,84 @@ rgb light_list::calculate_lighting(
         material mat = history.mat;
         vec3 H = unit_vector(light_dir + cam_dir);
 
-        vec3 I_D = 
-        mat.get_kd() * 
-        (light->intensity * (1 / ((1*1))))*
-        std::max(0.0, dot(history.normal, light_dir)) 
-        * mat.get_diffuse_colour();
 
-        vec3 I_S = 
-        mat.get_ks() * 
-        (light->intensity * (1 / ((1*1)))) *
-        std::pow(std::max(0.0, dot(H, history.normal)), mat.get_alpha()) * 
-        mat.get_specular_colour();
+        // Blinn-phong shading
+        // vec3 I_D = 
+        // mat.get_kd() * 
+        // (light->intensity * (1 / ((1*1))))*
+        // std::max(0.0, dot(history.normal, light_dir)) 
+        // * mat.get_diffuse_colour();
+
+
+        double cos_theta_d = dot(history.normal, light_dir);
+        double cos_theta_v = dot(history.normal, cam_dir);
+        double roughness = 0.01; //ranges [0,1]
+        double diffuse_reflectance = 0.4; //ranges [0,1]
+        double FD90 = 0.5 + 2 * (roughness) * (cos_theta_d * cos_theta_d);
+        vec3 DI = (diffuse_reflectance / M_PI) * (1+ (FD90 - 1) *(std::pow(1-cos_theta_d, 5.0))) * ((1.0 + (FD90 - 1.0)) * (std::pow(1-cos_theta_v, 5.0))) * mat.get_diffuse_colour();
+
+        vec3 I_D = 
+        DI * 
+        (light->intensity * (1 / ((1*1))))*
+        std::max(0.0, dot(history.normal, light_dir));
+
+
+
+        // Blinn-phong shading
+        // vec3 I_S = 
+        // mat.get_ks() * 
+        // (light->intensity * (1 / ((1*1)))) *
+        // std::pow(std::max(0.0, dot(H, history.normal)), mat.get_alpha()) * 
+        // mat.get_specular_colour();
+
+        // GGX
+        vec3 N = history.normal;
+        vec3 L = light_dir;
+        vec3 V = cam_dir;
+
+
+        double NdotV = std::max(dot(N, V), 0.0);
+        double NdotL = std::max(dot(N, L), 0.0);
+        double NdotH = std::max(dot(N, H), 0.0);
+        double HdotV = std::max(dot(H, V), 0.0);
+        double LdotH = std::max(dot(L, H), 0.0);
+
+        // std::cout << "NdotV: " << NdotV << std::endl;
+        // std::cout << "NdotL: " << NdotL << std::endl;
+        // std::cout << "NdotH: " << NdotH << std::endl;
+        // std::cout << "HdotV: " << HdotV << std::endl;
+        // std::cout << "LdotH: " << LdotH << std::endl;
+
+        // Normal Distribution Function
+        double a = roughness * roughness;
+        double a2 = a * a;
+        double NdotH2 = NdotH * NdotH;
+        double denom = (NdotH2 * (a2 - NdotH) * NdotH + 1.0);
+        double D = a2 / (M_PI * denom * denom);
+
+        // Geometry Function
+        double ro = (roughness + 1.0);
+        double k = (ro * ro) / 0.5;
+        double ggx1 = NdotV / (NdotV * (1.0 - k) + k);
+        double ggx2 = NdotL / (NdotL * (1.0 - k) + k);
+        double G = ggx1 * ggx2;
+
+        // Fresnel Term
+        vec3 F0 = mat.get_specular_colour();
+        vec3 F = F0 + ((rgb(1.0, 1.0, 1.0) - F0) * std::pow(1.0 - LdotH, 10.0));
+
+        // GGX BRDF
+        vec3 I = (D * G * F) / (4.0 * std::max(NdotV * NdotL, 1e-6));
+
+        // std::cout << "D: " << D << std::endl;
+        // std::cout << "G: " << G << std::endl;
+        // std::cout << "F: " << F << std::endl;
+        // std::cout << "I: " << I << std::endl;
+
+        // Specular lighting
+        vec3 I_S = I + NdotL/M_PI * light->intensity * std::pow(std::max(0.0, dot(H, history.normal)), mat.get_alpha()); 
+
+        
         
         if(mat.get_texture()->dirname != "\0") {
             vec3 txt_color = mat.get_texture()->sample(history.u, history.v);
@@ -83,10 +150,10 @@ rgb light_list::calculate_lighting(
                 default_light += (I_D + I_S) * (1.0 - mat.get_reflectivity());
             } else {
                 // Darken the color for shadows
-                default_light += (I_D+I_S) * 0.5;
+            default_light += (I_D+I_S) * NdotL * light->intensity * 0.5;
             }
         } else {
-            default_light += (I_D+I_S);
+            default_light += (I_D+I_S) * NdotL * light->intensity;
         }
 
         if(mat.get_isreflective() && mat.get_reflectivity() > 0){
