@@ -13,10 +13,13 @@ reflectivity(0),
 isrefractive(false),
 refractiveindex(0),
 hastexture(false),
-txt(std::make_shared<texture>("\0")) {
+txt(std::make_shared<texture>("\0")),
+roughness(1.0),
+metallic(0.0),
+emissive(0.0) {
 };
 
-material::material(double ks, double kd, double a, rgb dc, rgb sc, bool isrefl, double r, bool isrefr, double ri, bool hast, std::shared_ptr<texture> t) : 
+material::material(double ks, double kd, double a, rgb dc, rgb sc, bool isrefl, double r, bool isrefr, double ri, bool hast, std::shared_ptr<texture> t, double ro, double met, double em) : 
     k_s(ks), 
     k_d(kd), 
     alpha(a), 
@@ -27,7 +30,10 @@ material::material(double ks, double kd, double a, rgb dc, rgb sc, bool isrefl, 
     isrefractive(isrefr), 
     refractiveindex(ri),
     hastexture(hast),
-    txt(t)
+    txt(t),
+    roughness(ro),
+    metallic(met),
+    emissive(em)
      {};
 
 
@@ -43,6 +49,9 @@ material::material(const material& other)
       isrefractive(other.isrefractive), 
       refractiveindex(other.refractiveindex),
       hastexture(other.hastexture),
-      txt(other.txt) // Use the copy constructor of shared_ptr
+      txt(other.txt), // Use the copy constructor of shared_ptr
+      roughness(other.roughness),
+      metallic(other.metallic),
+      emissive(other.emissive)
 {
-}
+};

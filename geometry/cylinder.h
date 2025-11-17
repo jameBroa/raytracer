@@ -2,13 +2,13 @@
 #define CYLINDER_H
 
 #include "../ray/ray_intersectable.h"
-#include "../vec/vec3.h"
+#include "../vec/vector3.h"
 #include "../material/material.h"
 #include <string>
 
 class cylinder : public ray_intersectable {
     public: 
-        cylinder(const point center, const vec3 axis, 
+        cylinder(const point center, const vector3 axis, 
         const double radius, const double height, const material& mat);
 
         const material& get_material() const override;
@@ -25,7 +25,7 @@ class cylinder : public ray_intersectable {
 
         bool intersect_plane(const ray& r, 
         const point plane_point, 
-        const vec3 plane_normal, 
+        const vector3 plane_normal, 
         double& t,
         double min,
         double max
@@ -33,7 +33,7 @@ class cylinder : public ray_intersectable {
 
     private:
         point center;
-        vec3 axis;
+        vector3 axis;
         double radius;
         double height;
         material material_settings;

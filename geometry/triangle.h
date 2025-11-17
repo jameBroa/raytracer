@@ -2,7 +2,7 @@
 #define TRIANGLE_H
 
 #include "../ray/ray_intersectable.h"
-#include "../vec/vec3.h"
+#include "../vec/vector3.h"
 #include "../material/material.h"
 
 class triangle : public ray_intersectable {

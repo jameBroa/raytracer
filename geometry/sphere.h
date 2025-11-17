@@ -2,7 +2,7 @@
 #define SPHERE_H
 
 #include "../ray/ray_intersectable.h"
-#include "../vec/vec3.h"
+#include "../vec/vector3.h"
 #include <string>
 
 class sphere : public ray_intersectable {

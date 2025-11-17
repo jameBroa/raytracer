@@ -4,10 +4,10 @@
 
 using namespace vec3_utils;
 
-light::light(point pos, vec3 intens): location(pos), intensity(intens) {};
+light::light(point pos, vector3 intens): location(pos), intensity(intens) {};
 
 bool light::is_in_shadow(point intersection_loc, const ray_intersectable& env) {
-    vec3 light_dir = unit_vector(location - intersection_loc);
+    vector3 light_dir = unit_vector(location - intersection_loc);
 
     ray light_ray = ray(intersection_loc, light_dir);
     double dist_to_light = (location - intersection_loc).length();

@@ -3,8 +3,8 @@
     "rendermode": "phong",
     "camera": {
         "type": "pinhole",
-        "width": 1200,
-        "height": 800,
+        "width": 800,
+        "height": 600,
         "position": [
             0.0,
             1,
@@ -68,6 +68,8 @@
                         1.0
                     ],
                     "isreflective": true,
+                    "metallic":1.0,
+                    "roughness":0.01,
                     "reflectivity": 0.9,
                     "isrefractive": true,
                     "refractiveindex": 1.4

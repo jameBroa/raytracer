@@ -3,7 +3,7 @@
 
 #include <string>
 #include "../settings/settings.h"
-#include "../common.h"
+#include "../camera/camera.h"
 #include "./json.hpp"
 #include "../ray/ray_intersectable_list.h"
 #include "../light/light_list.h"  
@@ -20,7 +20,7 @@ class input{
 
         settings create_settings();
 
-        camera create_cam_settings(json cam_data);
+        camera create_cam_settings(json cam_data, rgb bgcol, std::string rm, int num_bounces);
         ray_intersectable_list create_env_settings(json scene_data);
         light_list create_light_settings(json light_data);
 };

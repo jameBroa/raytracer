@@ -7,40 +7,19 @@ using namespace std;
 
 
 void cylinder::get_uv(const point& p, double& u, double& v) const {
-
     float theta = atan2(p.z(), p.x());
     u = (theta + M_PI) / (2*M_PI);
     v = p.y();
-
-
-    // vec3 cp = p - center;
-    // double phi = atan2(cp.z(), cp.x());
-    // u = 1 - (phi + pi) / (2*pi);
-    // v = (cp.y() - center.y()) / height;
-    // if (u < 0) u = 0;
-    // if (u > 1) u = 1;
-    // if (v < 0) v = 0;
-    // if (v > 1) v = 1;
-    // return;
-    // vec3 cp = p - center;
-    // double phi = atan2(cp.z(), cp.x());
-    // u = 1 - (phi + pi) / (2*pi);
-    // v = (cp.y() - center.y()) / height;
-    // if (u < 0) u = 0;
-    // if (u > 1) u = 1;
-    // if (v < 0) v = 0;
-    // if (v > 1) v = 1;
-    // return;
 }
 
 bool cylinder::bounding_box(aabb& output_box) const {
     // Calculate the two end points of the cylinder
-    vec3 half_height_vector = (axis * (height));
+    vector3 half_height_vector = (axis * (height));
     point end1 = center - half_height_vector;
     point end2 = center + half_height_vector;
 
     // Calculate the bounding box by considering the radius around the axis
-    vec3 radius_vector(radius, radius, radius);
+    vector3 radius_vector(radius, radius, radius);
 
     point min_point(
         std::min({end1.x() - radius_vector.x(), end2.x() - radius_vector.x(), end1.x() + radius_vector.x(), end2.x() + radius_vector.x()}),
@@ -60,7 +39,7 @@ bool cylinder::bounding_box(aabb& output_box) const {
 
 
 cylinder::cylinder(const point ctr,
-                    const vec3 ax,
+                    const vector3 ax,
                     const double r,
                     const double h,
                     const material& mat) :
@@ -82,7 +61,7 @@ bool cylinder::intersect(const ray& r,
             point cap_2 = center + (axis * (height)); // top top
 
             // vec3 oc = cap_2 - r.origin();
-            vec3 oc = center - r.origin();  // Use cylinder center as reference
+            vector3 oc = center - r.origin();  // Use cylinder center as reference
 
             double a = r.direction().length_squared() - (dot(r.direction(), axis)*dot(r.direction(), axis));
             double h = dot(r.direction(), oc) - (dot(r.direction(), axis)*dot(oc, axis));
@@ -183,7 +162,7 @@ bool cylinder::intersect(const ray& r,
             // cap_2 or cap_1 made this work in reflected
 
             point p = r.position_at(root);
-            vec3 cp = p - center;  // Vector from center to hit point
+            vector3 cp = p - center;  // Vector from center to hit point
             double projection = dot(cp, axis);  // Project onto axis
             if(projection < -height || projection > (height)) {
                 return false;
@@ -206,8 +185,8 @@ bool cylinder::intersect(const ray& r,
                 
                 history.time = root;
                 history.point = p;
-                vec3 closest_point_on_axis = center + axis * projection;
-                vec3 outward_norm = unit_vector(p - closest_point_on_axis);
+                vector3 closest_point_on_axis = center + axis * projection;
+                vector3 outward_norm = unit_vector(p - closest_point_on_axis);
                 // vec3 outward_norm = unit_vector(p-center - dot(p - center, axis)*axis);
                 history.point += outward_norm * 1e-4;
                 history.set_face_of_norm(r, outward_norm);
@@ -257,7 +236,7 @@ bool cylinder::intersect(const ray& r,
             }
         }
 
-bool cylinder::intersect_plane(const ray& r, const point plane_point, const vec3 plane_normal, double& t, double min, double max) const {
+bool cylinder::intersect_plane(const ray& r, const point plane_point, const vector3 plane_normal, double& t, double min, double max) const {
     double denom = dot(r.direction(), plane_normal);
     if (std::abs(denom) < 1e-6) {  // Ray is parallel to the plane
         return false;

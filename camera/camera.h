@@ -1,4 +1,4 @@
-#include "../vec/vec3.h"
+#include "../vec/vector3.h"
 #include "../image/image.h"
 #include "../ray/ray_intersectable_list.h"
 #include "../light/light_list.h"
@@ -9,14 +9,14 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-using point = vec3;
+using point = vector3;
 class camera{
     public:
         // fl: focal length
         // vp: viewport (vph -> viewport height)
         // cc: camera center
         // pg: pixel gap
-        camera(double fl, point cc, vec3 lookAt, vec3 upVector, image img, double expos);
+        camera(double fl, point cc, vector3 lookAt, vector3 upVector, image img, double expos, std::string rm, double numbounces, rgb bg, double lr, double fd, double numsamples);
 
         double const focal_length;
         double const field_of_view;
@@ -24,37 +24,44 @@ class camera{
         double const viewport_width;
         double const distance_to_vp = 1;
         double const exposure;
-    
+        const std::string rendermode;
+        double const numbounces;
+        rgb bg_col;
+        double const lens_radius;
+        double const focus_dist;
+        double const numsamples;
+
 
         point const camera_center;
 
         // Define's camera orientation
-        const vec3 lookAt; 
-        const vec3 upVector;
+        const vector3 lookAt; 
+        const vector3 upVector;
 
 
-        vec3 const viewport_u; // horizontal vp edges
-        vec3 const viewport_v; // vertical vp edges
 
-        vec3 const pixel_gap_u; //space between pixels
-        vec3 const pixel_gap_v;
+        vector3 const viewport_u; // horizontal vp edges
+        vector3 const viewport_v; // vertical vp edges
+
+        vector3 const pixel_gap_u; //space between pixels
+        vector3 const pixel_gap_v;
 
         
-        vec3 const vp_ul_pixel; // location in 3d
-        vec3 const pixel_0; // location in 2d
+        vector3 const vp_ul_pixel; // location in 3d
+        vector3 const pixel_0; // location in 2d
 
         // helper initialization functions
-        double calculate_vp_width(image img, vec3 cc, vec3 look, double fov) const;
+        double calculate_vp_width(image img, vector3 cc, vector3 look, double fov, std::string rm) const;
         double calculate_focal_length(double fov, image img) const;
-        double calculate_vp_height(image img, vec3 cc, vec3 look, double fov) const;
+        double calculate_vp_height(image img, vector3 cc, vector3 look, double fov, std::string rm) const;
 
-        vec3 calculate_vp_u() const;
-        vec3 calculate_vp_v() const;
-        vec3 calculate_pg_u(image img) const;
-        vec3 calculate_pg_v(image img) const;
+        vector3 calculate_vp_u() const;
+        vector3 calculate_vp_v() const;
+        vector3 calculate_pg_u(image img) const;
+        vector3 calculate_pg_v(image img) const;
 
-        vec3 calculate_ul_pixel() const;
-        vec3 calculate_pixel_0() const;
+        vector3 calculate_ul_pixel() const;
+        vector3 calculate_pixel_0() const;
         
         // Calculate the color of the ray (bg color if not intersection, otherwise calculate lighting) 
         rgb ray_colour(const ray& r, const ray_intersectable& world, const light_list lights);

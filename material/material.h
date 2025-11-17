@@ -1,6 +1,6 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
-#include "../vec/vec3.h"
+#include "../vec/vector3.h"
 #include "../texture/texture.h"
 #include <memory>
 
@@ -9,7 +9,7 @@ class material {
     
         material();
         material(double ks, double kd, double a, rgb dc, rgb sc, bool isrefl, double r, bool isrefr, double ri,
-        bool hast, std::shared_ptr<texture> t);
+        bool hast, std::shared_ptr<texture> t, double roughness, double metal, double emissive);
 
         double get_ks() const { return k_s; }
         double get_kd() const { return k_d; }
@@ -21,6 +21,9 @@ class material {
         bool get_isrefractive() const { return isrefractive; }
         double get_refractiveindex() const { return refractiveindex; }
         bool get_hastexture() const { return hastexture; }
+        double get_roughness() const { return roughness; }
+        double get_metallic() const {return metallic;}
+        double get_emissive() const {return emissive;}
 
         std::shared_ptr<texture> get_texture() const { return txt; }
         
@@ -40,6 +43,9 @@ class material {
             (isrefractive) = other.isrefractive;
             (refractiveindex) = other.refractiveindex;
             (txt) = other.txt;
+            (roughness) = other.roughness;
+            (metallic) = other.metallic;
+            (emissive) = other.emissive;
         }
         return *this;
     }
@@ -57,6 +63,9 @@ class material {
          double refractiveindex;
         bool hastexture;
         std::shared_ptr<texture> txt;
+        double roughness;
+        double metallic;
+        double emissive;
 };
 
 #endif

@@ -13,7 +13,7 @@ texture::texture(const std::string filename) {
     load_ppm(filename);
 }
 
-vec3 texture::sample(float u, float v) {
+vector3 texture::sample(float u, float v) {
     u = u - std::floor(u);
     v = v - std::floor(v);
 
@@ -48,7 +48,7 @@ void texture::load_ppm(const std::string filename) {
         for(int i = 0; i < width * height; i++) {
             int r, g, b;
             file >> r >> g >> b;
-            data[i] = vec3(r/255.0, g/255.0, b/255.0);
+            data[i] = vector3(r/255.0, g/255.0, b/255.0);
         }
     } else if (header == "P6") {
         for (int i = 0; i < width * height; i++) {
@@ -56,7 +56,7 @@ void texture::load_ppm(const std::string filename) {
             file.read(reinterpret_cast<char*>(&r), 1);
             file.read(reinterpret_cast<char*>(&g), 1);
             file.read(reinterpret_cast<char*>(&b), 1);
-            data[i] = vec3(r / 255.0, g / 255.0, b / 255.0);
+            data[i] = vector3(r / 255.0, g / 255.0, b / 255.0);
         }
     }
     if(!file) {

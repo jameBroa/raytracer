@@ -1,7 +1,7 @@
 #ifndef AABB_H
 #define AABB_H
 
-#include "../../vec/vec3.h"
+#include "../../vec/vector3.h"
 #include "../ray.h"
 
 // Axis aligned bounding box (using in BVH)
