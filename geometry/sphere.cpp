@@ -11,7 +11,7 @@ const material& sphere::get_material() const {
 }
 
 void sphere::get_uv(const point& p, double& u, double& v) const {
-    vec3 norm = unit_vector(p - center);
+    vector3 norm = unit_vector(p - center);
     double phi = std::atan2(norm.z(), norm.x());
     double theta = std::asin(norm.y());
     u = 1 - (phi + M_PI) / (2*M_PI);
@@ -19,7 +19,7 @@ void sphere::get_uv(const point& p, double& u, double& v) const {
 }
 
 bool sphere::bounding_box(aabb& bbox) const {
-    bbox = aabb(center - vec3(radius, radius, radius), center + vec3(radius, radius, radius));
+    bbox = aabb(center - vector3(radius, radius, radius), center + vector3(radius, radius, radius));
     return true;
 }
 
@@ -29,7 +29,7 @@ bool sphere::intersect(const ray&r,
         double ray_inters_max,
         intersect_history& history
         ) const {
-            vec3 oc = center - r.origin();
+            vector3 oc = center - r.origin();
             double a = r.direction().length_squared();
             double h = dot(r.direction(), oc);
             double c = oc.length_squared() - radius*radius;
@@ -53,7 +53,7 @@ bool sphere::intersect(const ray&r,
 
             history.time = root;
             history.point = r.position_at(root);
-            vec3 outward_norm = (history.point - center) / radius;
+            vector3 outward_norm = (history.point - center) / radius;
             history.set_face_of_norm(r, outward_norm);
             history.set_material(material_settings);
             double u, v;

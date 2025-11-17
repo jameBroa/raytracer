@@ -25,6 +25,9 @@ class light_list {
             int num_bounces
             ) const;
 
+        rgb pathtrace(const intersect_history& history, 
+const ray& r, const ray_intersectable& world, int num_bounces);
+
 
 };
 

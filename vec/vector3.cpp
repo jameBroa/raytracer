@@ -1,4 +1,4 @@
-#include "vec3.h"
+#include "vector3.h"
 
 
 // In C++, the :: operator is used as a scope resolution
@@ -6,82 +6,75 @@
 // which in this case happens to be a constructor, implement below.
 
 // Could also be thought of like: vec3:: -> within the scope of the vec3 class
-vec3::vec3() {
+vector3::vector3() {
     coords[0] = 0.0;
     coords[1] = 0.0;
     coords[2] = 0.0;
 }
 
-vec3::vec3(double coord_x, double coord_y, double coord_z) {
+vector3::vector3(double coord_x, double coord_y, double coord_z) {
     coords[0] = coord_x;
     coords[1] = coord_y;
     coords[2] = coord_z;
 }
 
-double vec3::x() const {
+double vector3::x() const {
     return coords[0];
 }
 
-double vec3::y() const {
+double vector3::y() const {
     return coords[1];
 }
 
-double vec3::z() const {
+double vector3::z() const {
     return coords[2];
 }
 
-vec3 vec3::operator-() const {
-    return vec3(
+vector3 vector3::operator-() const {
+    return vector3(
         -coords[0],
         -coords[1],
         -coords[2]
     );
 }
 
-double vec3::operator[](int i) const {
-    return coords[i];
-}
-
-double& vec3::operator[](int i) {
-    return coords[i];
-}
-
-vec3& vec3::operator+=(const vec3& v){
+vector3& vector3::operator+=(const vector3& v){
     coords[0] += v.coords[0];
     coords[1] += v.coords[1];
     coords[2] += v.coords[2];
     return *this; //*this keyword is a reference to the curent object instance/reference
 }
 
-vec3& vec3::operator*=(double t) {
+vector3& vector3::operator*=(double t) {
     coords[0] *= t;
     coords[1] *= t;
     coords[2] *= t;
     return *this;
 }
 
-vec3& vec3::operator/=(double t) {
+vector3& vector3::operator/=(double t) {
     coords[0] /= t;
     coords[1] /= t;
     coords[2] /= t;
     return *this;
 }
 
-/*
-Could implement operator/=(double t) similarly to below:
-
-    vec3 vec3::operator/=(double t){
-        return *this *= 1/t;
-    }
-My implementation still works, but the above is more C++ like apparantly
-*/
-
-double vec3::length() const {
+double vector3::length() const {
     return std::sqrt(length_squared());
 }
 
-double vec3::length_squared() const {
+double vector3::length_squared() const {
     return coords[0]*coords[0] + coords[1]*coords[1] + coords[2]*coords[2];
+}
+
+// Added for AABB support
+// Allows random sampling of axis for BVH
+double vector3::operator[](int i) const {
+    return coords[i];
+}
+
+double& vector3::operator[](int i) {
+    return coords[i];
 }
 
 

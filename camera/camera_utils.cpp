@@ -18,13 +18,13 @@ namespace camera_utils{
         }
         return true;
     }
-    vec3 random_in_unit_disk() {
+    vector3 random_in_unit_disk() {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_real_distribution<> dis(-1, 1);
-        vec3 p;
+        vector3 p;
         do {
-            p = vec3(dis(gen), dis(gen), 0);
+            p = vector3(dis(gen), dis(gen), 0);
         } while (dot(p,p) >= 1.0);
         return p;
     }

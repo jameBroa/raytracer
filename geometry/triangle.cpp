@@ -34,9 +34,9 @@ bool triangle::bounding_box(aabb& output_box) const {
 }
 
 void triangle::get_uv(const point& p, double& u, double& v) const {
-    vec3 ab = b - a;
-    vec3 ac = c - a;
-    vec3 ap = p - a;
+    vector3 ab = b - a;
+    vector3 ac = c - a;
+    vector3 ap = p - a;
 
     double dot00 = dot(ab, ab);
     double dot01 = dot(ab, ac);
@@ -54,9 +54,9 @@ bool triangle::intersect(const ray&r,
         double ray_inters_max,
         intersect_history& history
         ) const {
-            vec3 ab = b - a;
-            vec3 ac = c - a;
-            vec3 norm = unit_vector(cross(ab, ac)); // normal to the triangle, pointing outwards
+            vector3 ab = b - a;
+            vector3 ac = c - a;
+            vector3 norm = unit_vector(cross(ab, ac)); // normal to the triangle, pointing outwards
             double denom = dot(norm, r.direction());
 
             if (std::abs(denom) < 0.000001) { // ray is parallel to the triangle
@@ -69,17 +69,17 @@ bool triangle::intersect(const ray&r,
             }
 
             point p = r.position_at(t); //point of intersection
-            vec3 ap = p - a;
-            vec3 bp = p - b;
-            vec3 cp = p - c;
+            vector3 ap = p - a;
+            vector3 bp = p - b;
+            vector3 cp = p - c;
 
             double ang_ab = acos(dot(ap,bp) / (ap.length() * bp.length()));
             double ang_bc = acos(dot(bp,cp) / (bp.length() * cp.length()));
             double ang_ca = acos(dot(cp,ap) / (cp.length() * ap.length()));
 
-            vec3 v0 = b - a;
-            vec3 v1 = c - a;
-            vec3 v2 = p - a;
+            vector3 v0 = b - a;
+            vector3 v1 = c - a;
+            vector3 v2 = p - a;
 
             double dot00 = dot(v0, v0);
             double dot01 = dot(v0, v1);

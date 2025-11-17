@@ -1,7 +1,9 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "../common.h"
+#include "../camera/camera.h"
+#include "../image/image.h"
+
 #include "../scene/scene.h"
 #include <string>
 

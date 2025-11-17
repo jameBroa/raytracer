@@ -4,8 +4,8 @@
     "camera":
         { 
             "type":"pinhole", 
-            "width":1200, 
-            "height":800,
+            "width":800, 
+            "height":600,
             "position":[0.0, 1, -2],
             "lookAt":[0.0, -0.1, 1.0],
             "upVector":[0.0, 1.0, 0.0],
@@ -36,6 +36,8 @@
                             "specularcolor":[1.0,1.0,1.0],
                             "isreflective":false,
                             "reflectivity":1.0,
+                            "metallic":1.0,
+                            "roughness":0.1,
                             "isrefractive":false,
                             "refractiveindex":1.0 
                         } 
@@ -54,6 +56,8 @@
                             "diffusecolor":[0.5, 0.5, 0.8],
                             "specularcolor":[1.0,1.0,1.0],
                             "isreflective":false,
+                            "metallic":1.0,
+                            "roughness":0.1,
                             "reflectivity":1.0,
                             "isrefractive":false,
                             "refractiveindex":1.0 

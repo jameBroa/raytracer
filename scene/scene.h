@@ -1,7 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "../common.h"
+
 #include "../ray/ray_intersectable_list.h"
 #include "../light/light_list.h"
 

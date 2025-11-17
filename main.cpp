@@ -4,7 +4,6 @@
 #include "./geometry/sphere.h"
 #include "./geometry/cylinder.h"
 #include "./geometry/triangle.h"
-#include "./common.h"
 #include "./light/light.h"
 #include "./light/light_list.h"
 #include "./input/input.h"
@@ -15,7 +14,7 @@
 
 using namespace std;
 using namespace vec3_utils;
-using point = vec3;
+using point = vector3;
 
 int main(int argc, char* argv[]){
 
